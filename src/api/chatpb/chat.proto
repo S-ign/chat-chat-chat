@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package chat;
+option go_package="github.com/S-ign/chat-chat-chat/src/api/chatpb";
+
+service ChatService {
+	// BiDirectional
+	rpc Chat(stream ChatRequest) returns (stream ChatResponse) {};
+}
+
+message Chatting {
+	string chat_message = 1;
+}
+
+message ChatRequest {
+	Chatting chatting = 1;
+}
+
+message ChatResponse {
+	Chatting chatting = 1;
+}
