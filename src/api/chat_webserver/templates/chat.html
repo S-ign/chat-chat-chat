@@ -1,0 +1,58 @@
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+		<title>chat-chat-chat</title>
+		<link rel="stylesheet" type="text/css" href="http://meyerweb.com/eric/tools/css/reset/reset.css">
+	</head>
+	<body>
+		<!-- chat-box flexbox container -->
+		<div>
+			<div class="d-flex p-2">
+				<!-- flex chat message items -->
+				<div class="d-flex flex-column">
+					<center><h3><div class="p-2">Welcome to Room {{.roomid}}</div></h3></center>
+					<div id="messages" class="p-2"></div>
+				</div>
+			</div>
+
+			<!--chat-message textbox -->
+			<form id="chat_form" method="POST" action="/chat/{{.roomid}}">
+				<div>
+					<div class="input-group mb-3">
+						<input id="message_form" name="chatmessage" type="text" class="form-control" placeholder="Chat Message" aria-label="chat-message" aria-describedby="basic-addon2">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="submit">Send</button>
+						</div>
+					</div>
+				</div>
+			</form>
+
+			<!-- Optional JavaScript -->
+			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+			<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+			<script src="https://docs.microsoft.com/en-us/aspnet/ajax/cdn/cdnajax452"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+			<script src="http://malsup.github.com/jquery.form.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+			<script>
+				$('#message_form').focus();
+				$(document).ready(function() {
+					if (window.EventSource) {
+						var source = new EventSource('/stream/{{.roomid}}');
+						source.addEventListener('message', function(e) {
+							$('#messages').append(e.data + "</br>");
+							$('#message_form').val('');
+						}, true);
+					} else {
+						alert("NOT SUPPORTED");
+					}
+				});
+	</script>
+	</body>
+</html>

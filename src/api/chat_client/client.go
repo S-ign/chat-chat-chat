@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 
@@ -11,16 +10,15 @@ import (
 )
 
 // Connect connects client to gRPC
-func Connect() chatpb.ChatServiceClient {
+func Connect() (chatpb.ChatServiceClient, *grpc.ClientConn) {
 	cc, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
-	defer cc.Close()
 
 	c := chatpb.NewChatServiceClient(cc)
 
-	return c
+	return c, cc
 }
 
 // Chat sends messages to the ChatServiceServer
@@ -41,14 +39,13 @@ func Chat(message string, c chatpb.ChatServiceClient) {
 	}
 	// send messsage
 	go func() {
-		fmt.Printf("Sending message: %v\n", req)
 		stream.Send(req)
 	}()
 
 	// recv messages
 	go func() {
 		for {
-			res, err := stream.Recv()
+			_, err := stream.Recv()
 			if err == io.EOF {
 				break
 			}
@@ -56,7 +53,6 @@ func Chat(message string, c chatpb.ChatServiceClient) {
 				log.Fatalf("error while receiving: %v\n", err)
 				break
 			}
-			fmt.Printf("Server response: %v\n", res.GetChatting().GetChatMessage())
 		}
 		close(waitc)
 	}()

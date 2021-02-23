@@ -44,6 +44,7 @@ func (*server) Chat(stream chatpb.ChatService_ChatServer) error {
 				ChatMessage: req.GetChatting().GetChatMessage(),
 			},
 		})
+		fmt.Printf("message received: %v\n", req)
 	}
 }
 
